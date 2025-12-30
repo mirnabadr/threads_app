@@ -51,38 +51,75 @@ Threads App is a comprehensive social media platform that enables users to creat
 ### 🏠 Home Feed
 The main feed displays all threads from users and communities you follow, with a clean, modern interface optimized for reading and engagement.
 
-![Home Feed](screenshots/home.png)
-*The home page features a three-column layout with navigation sidebar, main content feed, and suggestions panel. Users can view threads, see replies, and interact with posts through likes, comments, and shares.*
+*The home page features a three-column layout with navigation sidebar, main content feed, and suggestions panel. Users can view threads, see replies, and interact with posts through likes, comments, and shares. The interface uses a dark mode theme with purple accent colors for active states and interactive elements.*
+
+**Key Features:**
+- Three-column responsive layout
+- Real-time thread feed with pagination
+- Interactive engagement buttons (like, comment, share)
+- Reply count display with user avatars
+- Suggested communities and users sidebar
 
 ### 🔍 Search Functionality
 Powerful search capabilities allow users to find other users and communities quickly with real-time filtering.
 
-![Search Page](screenshots/search.png)
-*The search page enables users to discover new people and communities. Search results display user profiles with avatars, usernames, and quick view buttons for easy navigation.*
+*The search page enables users to discover new people and communities. Search results display user profiles with avatars, usernames, and quick view buttons for easy navigation. The search bar supports real-time filtering as users type.*
+
+**Key Features:**
+- Real-time search with instant results
+- User profile cards with avatars
+- Quick view buttons for profile access
+- Community search functionality
+- Clean, focused search interface
 
 ### 🔔 Activity Feed
 Stay updated with all interactions on your threads through a dedicated activity feed.
 
-![Activity Feed](screenshots/activity.png)
-*The activity page shows all replies and interactions on your threads, keeping you informed about engagement on your content. Each activity item displays the user who replied and links to the original thread.*
+*The activity page shows all replies and interactions on your threads, keeping you informed about engagement on your content. Each activity item displays the user who replied and links to the original thread. This helps users stay engaged with their content and community.*
+
+**Key Features:**
+- Real-time activity notifications
+- Reply tracking on your threads
+- User profile integration
+- Direct navigation to thread discussions
+- Clean, organized activity cards
 
 ### ✍️ Create Thread
 Intuitive thread creation interface with a clean, distraction-free design.
 
-![Create Thread](screenshots/create-thread.png)
-*The create thread page provides a simple, focused interface for composing new posts. The large text area and prominent post button make it easy to share thoughts and ideas.*
+*The create thread page provides a simple, focused interface for composing new posts. The large text area and prominent post button make it easy to share thoughts and ideas. The interface supports both personal threads and community posts.*
+
+**Key Features:**
+- Large, distraction-free text editor
+- Community selection option
+- Real-time character count
+- Form validation
+- Seamless post submission
 
 ### 🏘️ Communities
 Discover and join communities based on your interests.
 
-![Communities](screenshots/communities.png)
-*The communities page allows users to search and explore different communities. Each community card displays member count, description, and quick access to view details.*
+*The communities page allows users to search and explore different communities. Each community card displays member count, description, and quick access to view details. Users can join communities to participate in focused discussions.*
+
+**Key Features:**
+- Community search and discovery
+- Member count display
+- Community descriptions
+- Quick view and join functionality
+- Suggested communities sidebar
 
 ### 👤 User Profile
 Comprehensive profile pages with tabs for threads, replies, and tagged content.
 
-![User Profile](screenshots/profile.png)
-*User profiles showcase all user content organized in tabs. Users can view their threads, replies, and tagged content. The profile includes edit functionality, bio, and engagement statistics.*
+*User profiles showcase all user content organized in tabs. Users can view their threads, replies, and tagged content. The profile includes edit functionality, bio, and engagement statistics. The interface supports both viewing your own profile and other users' profiles.*
+
+**Key Features:**
+- Profile header with avatar and bio
+- Tabbed content organization (Threads, Replies, Tagged)
+- Thread count badges
+- Edit profile functionality
+- Delete thread capability
+- Engagement statistics
 
 ## 🚀 Getting Started
 
