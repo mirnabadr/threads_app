@@ -334,7 +334,7 @@ export async function getActivity(userId: string | any) {
       return [];
     }
 
-    // Get all user thread IDs (both from children array and as parentId)
+    // Get all user thread IDs as strings (since parentId is stored as String in schema)
     const userThreadIds = userThreads.map((thread: any) => thread._id.toString());
     
     // Collect all the child thread ids (replies) from the 'children' field of each user thread
@@ -347,7 +347,7 @@ export async function getActivity(userId: string | any) {
 
     console.log(`Found ${childThreadIds.length} child thread IDs from children array`);
 
-    // Alternative approach: Also find threads where parentId matches user's thread IDs
+    // Find threads where parentId (String) matches user's thread IDs (as strings)
     // This ensures we catch all replies even if children array isn't updated
     const repliesByParentId = await Thread.find({
       parentId: { $in: userThreadIds },
@@ -358,22 +358,25 @@ export async function getActivity(userId: string | any) {
     console.log(`Found ${replyIdsFromParentId.length} replies by parentId`);
 
     // Combine both approaches - use all unique reply IDs
-    const allReplyIds = [...new Set([
-      ...childThreadIds.map((id: any) => id.toString()),
-      ...replyIdsFromParentId.map((id: any) => id.toString())
-    ])];
+    // Both childThreadIds and replyIdsFromParentId are already ObjectIds
+    const allReplyObjectIds = [
+      ...new Set([
+        ...childThreadIds,
+        ...replyIdsFromParentId
+      ])
+    ];
 
-    console.log(`Total unique reply IDs: ${allReplyIds.length}`);
+    console.log(`Total unique reply IDs: ${allReplyObjectIds.length}`);
 
     // If no child threads, return empty array
-    if (allReplyIds.length === 0) {
+    if (allReplyObjectIds.length === 0) {
       console.log("No replies found");
       return [];
     }
 
     // Find and return the child threads (replies) excluding the ones created by the same user
     const replies = await Thread.find({
-      _id: { $in: allReplyIds },
+      _id: { $in: allReplyObjectIds },
       author: { $ne: userObjectId }, // Exclude threads authored by the same user
     })
       .populate({
