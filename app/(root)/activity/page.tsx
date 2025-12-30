@@ -1,0 +1,53 @@
+import Image from "next/image";
+import Link from "next/link";
+import { currentUser } from "@clerk/nextjs/server"; 
+import { redirect } from "next/navigation";
+
+import { fetchUser, getActivity } from "@/lib/actions/user.actions";
+
+async function Page() {
+  const user = await currentUser();
+  if (!user) return null;
+
+  const userInfo = await fetchUser(user.id);
+  if (!userInfo?.onboarded) redirect("/onboarding");
+
+  // Pass the MongoDB _id to getActivity
+  const activity = await getActivity(userInfo._id);
+
+  return (
+    <>
+      <h1 className='head-text'>Activity</h1>
+
+      <section className='mt-10 flex flex-col gap-5'>
+        {activity && activity.length > 0 ? (
+          <>
+            {activity.map((activityItem: any) => (
+              <Link key={activityItem._id} href={`/thread/${activityItem.parentId || activityItem._id}`}>
+                <article className='activity-card'>
+                  <Image
+                    src={activityItem.author?.image || "/assets/user.svg"}
+                    alt='user_logo'
+                    width={20}
+                    height={20}
+                    className='rounded-full object-cover'
+                  />
+                  <p className='!text-small-regular text-light-1'>
+                    <span className='mr-1 text-primary-500'>
+                      {activityItem.author?.name || "Someone"}
+                    </span>{" "}
+                    replied to your thread
+                  </p>
+                </article>
+              </Link>
+            ))}
+          </>
+        ) : (
+          <p className='!text-base-regular text-light-3'>No activity yet</p>
+        )}
+      </section>
+    </>
+  );
+}
+
+export default Page;
