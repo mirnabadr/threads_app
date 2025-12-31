@@ -80,10 +80,25 @@ UPLOADTHING_APP_ID=your_app_id
 
 ### Issue 2: Database Connection Errors
 
+**Common Error:** `Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted.`
+
+**Solution - MongoDB Atlas IP Whitelist:**
+1. Go to [MongoDB Atlas Dashboard](https://cloud.mongodb.com/)
+2. Navigate to your cluster → **Network Access** (or **Security** → **Network Access**)
+3. Click **"Add IP Address"**
+4. For Vercel deployment, you have two options:
+   - **Option A (Recommended for Production):** Add `0.0.0.0/0` to allow all IP addresses (less secure but works for all Vercel deployments)
+   - **Option B (More Secure):** Add Vercel's IP ranges (check Vercel's documentation for current IP ranges)
+5. Click **"Confirm"**
+6. Wait 1-2 minutes for changes to propagate
+7. Redeploy your Vercel application
+
 **Fix:** The app now properly handles:
 - Serverless environment connection pooling
 - Both `MONGODB_URL` and `MONGODB_URI` variable names
 - Proper error handling and reconnection
+- Graceful degradation when database is unavailable
+- Connection timeouts to prevent hanging requests
 
 ### Issue 3: Build Errors
 

@@ -4,14 +4,23 @@ import { redirect } from "next/navigation";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 
+// Force dynamic rendering to avoid build-time database connection issues
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Home() {
   const user = await currentUser();
   
   // If user is authenticated, check onboarding status
   if (user) {
-    const userInfo = await fetchUser(user.id);
-    if (!userInfo?.onboarded) {
-      redirect("/onboarding");
+    try {
+      const userInfo = await fetchUser(user.id);
+      if (!userInfo?.onboarded) {
+        redirect("/onboarding");
+      }
+    } catch (error) {
+      // If we can't check onboarding status, continue to home page
+      console.error("Error checking onboarding status:", error);
     }
   }
   

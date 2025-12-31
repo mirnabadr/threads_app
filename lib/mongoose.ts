@@ -41,9 +41,12 @@ export const connectToDB = async () => {
       listenersAdded = true;
     }
 
-    // Connect to MongoDB
+    // Connect to MongoDB with timeout and better error handling
     await mongoose.connect(mongoUrl, {
       dbName: "threads", // Optional: specify database name
+      serverSelectionTimeoutMS: 10000, // 10 seconds timeout
+      socketTimeoutMS: 45000, // 45 seconds socket timeout
+      connectTimeoutMS: 10000, // 10 seconds connection timeout
     });
 
     isConnected = true;
@@ -52,7 +55,19 @@ export const connectToDB = async () => {
   } catch (error: any) {
     console.error("Error connecting to MongoDB:", error);
     isConnected = false;
-    throw new Error(`Failed to connect to MongoDB: ${error.message}`);
+    
+    // Provide more helpful error messages
+    let errorMessage = error.message || "Unknown error";
+    
+    if (errorMessage.includes("IP") || errorMessage.includes("whitelist")) {
+      errorMessage = "MongoDB connection failed: IP address not whitelisted. Please add Vercel IP addresses to your MongoDB Atlas IP whitelist. See: https://www.mongodb.com/docs/atlas/security-whitelist/";
+    } else if (errorMessage.includes("authentication")) {
+      errorMessage = "MongoDB connection failed: Authentication error. Please check your MongoDB credentials.";
+    } else if (errorMessage.includes("timeout")) {
+      errorMessage = "MongoDB connection failed: Connection timeout. Please check your network and MongoDB Atlas settings.";
+    }
+    
+    throw new Error(`Failed to connect to MongoDB: ${errorMessage}`);
   }
 };
 

@@ -9,39 +9,40 @@ import Thread from "@/lib/models/thread.model";
 import Community from "../models/community.model"; 
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
-  await connectToDB();
+  try {
+    await connectToDB();
 
-  // Calculate the number of posts to skip based on the page number and page size.
-  const skipAmount = (pageNumber - 1) * pageSize;
+    // Calculate the number of posts to skip based on the page number and page size.
+    const skipAmount = (pageNumber - 1) * pageSize;
 
-  // Create a query to fetch the posts that have no parent (top-level threads) (a thread that is not a comment/reply).
-  const postsQuery = Thread.find({ parentId: { $in: [null, undefined] } })
-    .sort({ createdAt: "desc" })
-    .skip(skipAmount)
-    .limit(pageSize)
-    .populate({
-      path: "author",
-      model: User,
-    })
-    .populate({
-      path: "community",
-      model: Community,
-    })
-    .populate({
-      path: "children", // Populate the children field
-      populate: {
-        path: "author", // Populate the author field within children
+    // Create a query to fetch the posts that have no parent (top-level threads) (a thread that is not a comment/reply).
+    const postsQuery = Thread.find({ parentId: { $in: [null, undefined] } })
+      .sort({ createdAt: "desc" })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: "author",
         model: User,
-        select: "_id name parentId image", // Select only _id and username fields of the author
-      },
-    });
+      })
+      .populate({
+        path: "community",
+        model: Community,
+      })
+      .populate({
+        path: "children", // Populate the children field
+        populate: {
+          path: "author", // Populate the author field within children
+          model: User,
+          select: "_id name parentId image", // Select only _id and username fields of the author
+        },
+      });
 
-  // Count the total number of top-level posts (threads) i.e., threads that are not comments.
-  const totalPostsCount = await Thread.countDocuments({
-    parentId: { $in: [null, undefined] },
-  }); // Get the total count of posts
+    // Count the total number of top-level posts (threads) i.e., threads that are not comments.
+    const totalPostsCount = await Thread.countDocuments({
+      parentId: { $in: [null, undefined] },
+    }); // Get the total count of posts
 
-  const posts = await postsQuery.exec();
+    const posts = await postsQuery.exec();
 
   // Ensure posts have proper structure and handle any missing data
   const formattedPosts = posts.map((post: any) => {
@@ -70,9 +71,14 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     };
   });
 
-  const isNext = totalPostsCount > skipAmount + posts.length;
+    const isNext = totalPostsCount > skipAmount + posts.length;
 
-  return { posts: formattedPosts, isNext };
+    return { posts: formattedPosts, isNext };
+  } catch (error: any) {
+    console.error("Error in fetchPosts:", error);
+    // Return empty result instead of crashing the page
+    return { posts: [], isNext: false };
+  }
 }
 
 interface Params {
