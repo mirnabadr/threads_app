@@ -43,9 +43,32 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
 
   const posts = await postsQuery.exec();
 
+  // Ensure posts have proper structure and handle any missing data
+  const formattedPosts = posts.map((post: any) => {
+    const postObj = post.toObject ? post.toObject() : post;
+    return {
+      ...postObj,
+      children: (postObj.children || []).map((child: any) => {
+        const childObj = child.toObject ? child.toObject() : child;
+        const authorObj = childObj.author?.toObject 
+          ? childObj.author.toObject() 
+          : (childObj.author || {});
+        return {
+          ...childObj,
+          author: {
+            _id: authorObj._id,
+            name: authorObj.name || "",
+            parentId: authorObj.parentId,
+            image: authorObj.image || "/assets/user.svg",
+          },
+        };
+      }),
+    };
+  });
+
   const isNext = totalPostsCount > skipAmount + posts.length;
 
-  return { posts, isNext };
+  return { posts: formattedPosts, isNext };
 }
 
 interface Params {

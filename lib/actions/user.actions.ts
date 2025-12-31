@@ -72,6 +72,10 @@ export async function updateUser({
 
     if (path === "/profile/edit") {
       revalidatePath(path);
+    } else {
+      // Revalidate onboarding and home page after onboarding completion
+      revalidatePath("/onboarding");
+      revalidatePath("/");
     }
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);

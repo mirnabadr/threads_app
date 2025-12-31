@@ -78,8 +78,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     if (pathname === "/profile/edit") {
       router.back();
     } else {
-      // After onboarding, redirect to user's profile page
-      router.push(`/profile/${user.id}`);
+      // After onboarding, redirect to home page
+      router.push("/");
     }
   };
 
