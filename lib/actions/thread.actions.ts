@@ -48,21 +48,25 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     const postObj = post.toObject ? post.toObject() : post;
     return {
       ...postObj,
-      children: (postObj.children || []).map((child: any) => {
-        const childObj = child.toObject ? child.toObject() : child;
-        const authorObj = childObj.author?.toObject 
-          ? childObj.author.toObject() 
-          : (childObj.author || {});
-        return {
-          ...childObj,
-          author: {
-            _id: authorObj._id,
-            name: authorObj.name || "",
-            parentId: authorObj.parentId,
-            image: authorObj.image || "/assets/user.svg",
-          },
-        };
-      }),
+      children: (postObj.children || [])
+        .map((child: any) => {
+          const childObj = child.toObject ? child.toObject() : child;
+          const authorObj = childObj.author?.toObject 
+            ? childObj.author.toObject() 
+            : (childObj.author || {});
+          return {
+            ...childObj,
+            author: {
+              _id: authorObj._id,
+              name: authorObj.name || "",
+              parentId: authorObj.parentId,
+              image: (authorObj.image && authorObj.image.trim() !== "") 
+                ? authorObj.image 
+                : "/assets/user.svg",
+            },
+          };
+        })
+        .filter((child: any) => child.author && child.author.image), // Ensure all have valid author with image
     };
   });
 

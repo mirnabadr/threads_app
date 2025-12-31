@@ -55,31 +55,45 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
-    const blob = values.profile_photo;
+    try {
+      const blob = values.profile_photo;
+      let finalImageUrl = values.profile_photo;
 
-    const hasImageChanged = isBase64Image(blob);
-    if (hasImageChanged) {
-      const imgRes = await startUpload(files);
+      const hasImageChanged = isBase64Image(blob);
+      if (hasImageChanged) {
+        const imgRes = await startUpload(files);
 
-      if (imgRes && imgRes[0]?.url) {  
-        values.profile_photo = imgRes[0].url;
+        if (imgRes && imgRes[0]?.url) {  
+          finalImageUrl = imgRes[0].url;
+        } else if (hasImageChanged) {
+          // If upload failed but image was changed, use default
+          finalImageUrl = "/assets/profile.svg";
+        }
       }
-    }
 
-    await updateUser({
-      name: values.name,
-      path: pathname,
-      username: values.username,
-      userId: user.id,
-      bio: values.bio,
-      image: values.profile_photo,
-    });
+      // Ensure we have a valid image URL
+      if (!finalImageUrl || finalImageUrl.trim() === "") {
+        finalImageUrl = "/assets/profile.svg";
+      }
 
-    if (pathname === "/profile/edit") {
-      router.back();
-    } else {
-      // After onboarding, redirect to home page
-      router.push("/");
+      await updateUser({
+        name: values.name.trim(),
+        path: pathname,
+        username: values.username.trim(),
+        userId: user.id,
+        bio: values.bio.trim(),
+        image: finalImageUrl,
+      });
+
+      if (pathname === "/profile/edit") {
+        router.back();
+      } else {
+        // After onboarding, redirect to home page
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      // Form will show validation errors automatically
     }
   };
 

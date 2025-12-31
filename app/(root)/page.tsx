@@ -36,7 +36,7 @@ export default async function Home() {
                   author={post.author}
                   community={post.community}
                   createdAt={post.createdAt}
-                  comments={post.children || []}
+                  comments={Array.isArray(post.children) ? post.children : []}
                 />
               ))}
             </>

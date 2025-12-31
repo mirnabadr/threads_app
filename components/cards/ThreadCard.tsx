@@ -126,18 +126,28 @@ function ThreadCard({
       {!isComment && comments.length > 0 && (
         <div className='ml-1 mt-3 flex items-center gap-2'>
           {comments
-            .filter((comment) => comment?.author?.image)
+            .filter((comment) => {
+              const image = comment?.author?.image;
+              return image && typeof image === "string" && image.trim() !== "" && image !== "/assets/user.svg";
+            })
             .slice(0, 2)
-            .map((comment, index) => (
-              <Image
-                key={`comment-${index}-${comment.author?.image || index}`}
-                src={comment.author.image || "/assets/user.svg"}
-                alt={`user_${index}`}
-                width={24}
-                height={24}
-                className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
-              />
-            ))}
+            .map((comment, index) => {
+              const imageUrl = (comment.author?.image && comment.author.image.trim() !== "") 
+                ? comment.author.image 
+                : "/assets/user.svg";
+              // Use a stable key based on the image URL and index
+              const stableKey = `comment-${id}-${index}-${imageUrl}`;
+              return (
+                <Image
+                  key={stableKey}
+                  src={imageUrl}
+                  alt={`comment-author-${index}`}
+                  width={24}
+                  height={24}
+                  className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+                />
+              );
+            })}
 
           <Link href={`/thread/${id}`}>
             <p className='mt-1 text-subtle-medium text-gray-1'>

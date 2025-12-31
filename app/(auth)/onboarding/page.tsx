@@ -19,9 +19,9 @@ async function Page() {
       id: user.id,
       objectId: userInfo?._id?.toString() || "",
       username: userInfo?.username || user.username || "",
-      name: userInfo?.name || user.firstName || "",
+      name: userInfo?.name || user.firstName || user.firstName || "",
       bio: userInfo?.bio || "",
-      image: userInfo?.image || user.imageUrl || "",
+      image: userInfo?.image || user.imageUrl || "/assets/profile.svg",
     };
 
     return (
